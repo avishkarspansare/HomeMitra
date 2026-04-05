@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity @Table(name="service_categories")
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class ServiceCategory {
@@ -15,5 +17,6 @@ public class ServiceCategory {
     @Column(name="sort_order") private int sortOrder;
     @Column(name="is_active") private boolean active = true;
     @OneToMany(mappedBy="category", fetch=FetchType.LAZY)
+    @JsonIgnore
     private List<Service> services;
 }
