@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel – HomeMitra</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <style>
+    body { background: #0f172a; color: white; padding-top: 0; font-family: 'DM Sans',sans-serif; }
+    .admin-layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+    .admin-sidebar { background: #1e293b; border-right: 1px solid #334155; padding: 0; position: fixed; width: 240px; height: 100vh; overflow-y: auto; }
+    .admin-logo { padding: 1.5rem; border-bottom: 1px solid #334155; }
+    .admin-logo-text { font-family: 'Syne',sans-serif; font-size: 1.3rem; font-weight: 800; }
+    .admin-logo-text span:first-child { color: #818cf8; }
+    .admin-logo-text span:last-child { color: #34d399; }
+    .admin-nav { padding: 1rem 0; }
+    .admin-nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1.5rem; font-size: 0.88rem; font-weight: 500; color: #94a3b8; cursor: pointer; transition: all var(--transition); border-left: 3px solid transparent; }
+    .admin-nav-item:hover { color: white; background: rgba(255,255,255,0.05); }
+    .admin-nav-item.active { color: #818cf8; background: rgba(99,102,241,0.1); border-left-color: #818cf8; }
+    .admin-main { margin-left: 240px; padding: 2rem; }
+    .admin-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; }
+    .admin-header h1 { font-size: 1.5rem; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; margin-bottom: 2rem; }
+    .kpi-card { background: #1e293b; border: 1px solid #334155; border-radius: var(--radius); padding: 1.5rem; }
+    .kpi-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 1rem; }
+    .kpi-val { font-size: 1.8rem; font-weight: 800; font-family: 'Syne',sans-serif; color: white; }
+    .kpi-lbl { font-size: 0.8rem; color: #64748b; margin-top: 0.2rem; }
+    .kpi-trend { font-size: 0.75rem; margin-top: 0.4rem; }
+    .up { color: #34d399; } .dn { color: #f87171; }
+    .admin-panel { background: #1e293b; border: 1px solid #334155; border-radius: var(--radius); overflow: hidden; margin-bottom: 1.5rem; }
+    .admin-panel-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid #334155; display: flex; align-items: center; justify-content: space-between; }
+    .admin-panel-title { font-weight: 700; font-size: 1rem; }
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table th { background: #0f172a; padding: 0.75rem 1rem; text-align: left; font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
+    .data-table td { padding: 0.9rem 1rem; border-top: 1px solid #334155; font-size: 0.88rem; color: #cbd5e1; }
+    .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+    .dot-green { background: #34d399; } .dot-yellow { background: #fbbf24; } .dot-red { background: #f87171; } .dot-blue { background: #818cf8; }
+    .mini-chart { display: flex; align-items: flex-end; gap: 4px; height: 50px; }
+    .mini-bar { flex: 1; border-radius: 2px; background: #818cf8; opacity: 0.7; min-height: 4px; transition: opacity var(--transition); }
+    .mini-bar:hover { opacity: 1; }
+    @media (max-width: 900px) { .admin-layout { grid-template-columns: 1fr; } .admin-sidebar { position: static; width: 100%; height: auto; } .admin-main { margin-left: 0; } .kpi-grid { grid-template-columns: repeat(2,1fr); } }
+  </style>
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="admin-logo">
+      <div class="admin-logo-text"><span>Home</span><span>Mitra</span></div>
+      <div style="font-size:0.72rem;color:#64748b;margin-top:0.2rem">Admin Console</div>
+    </div>
+    <nav class="admin-nav">
+      <div class="admin-nav-item active" onclick="showATab('dashboard',this)">📊 Dashboard</div>
+      <div class="admin-nav-item" onclick="showATab('bookings',this)">📅 Bookings</div>
+      <div class="admin-nav-item" onclick="showATab('users',this)">👥 Users</div>
+      <div class="admin-nav-item" onclick="showATab('providers',this)">🔧 Providers</div>
+      <div class="admin-nav-item" onclick="showATab('services',this)">🏠 Services</div>
+      <div class="admin-nav-item" onclick="showATab('payments',this)">💳 Payments</div>
+      <div style="border-top:1px solid #334155;margin:1rem 0"></div>
+      <div class="admin-nav-item" onclick="logout()">🚪 Logout</div>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+    <!-- DASHBOARD -->
+    <div id="atab-dashboard">
+      <div class="admin-header">
+        <div><h1>Overview</h1><div style="font-size:0.82rem;color:#64748b">Welcome back, Admin · ${new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'})}</div></div>
+        <button class="btn btn-primary btn-sm" onclick="Toast.show('Data refreshed','success')">↻ Refresh</button>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-card"><div class="kpi-icon" style="background:rgba(99,102,241,0.15)">📅</div><div class="kpi-val">1,284</div><div class="kpi-lbl">Total Bookings</div><div class="kpi-trend up">↑ 12% this week</div></div>
+        <div class="kpi-card"><div class="kpi-icon" style="background:rgba(52,211,153,0.15)">💰</div><div class="kpi-val">₹4.2L</div><div class="kpi-lbl">Revenue (Month)</div><div class="kpi-trend up">↑ 18% vs last</div></div>
+        <div class="kpi-card"><div class="kpi-icon" style="background:rgba(251,191,36,0.15)">👥</div><div class="kpi-val">52,410</div><div class="kpi-lbl">Total Users</div><div class="kpi-trend up">↑ 234 new today</div></div>
+        <div class="kpi-card"><div class="kpi-icon" style="background:rgba(248,113,113,0.15)">⏳</div><div class="kpi-val">47</div><div class="kpi-lbl">Pending Bookings</div><div class="kpi-trend dn">↑ 8 unassigned</div></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
+        <div class="admin-panel">
+          <div class="admin-panel-header"><span class="admin-panel-title">Weekly Revenue</span></div>
+          <div style="padding:1.5rem">
+            <div style="font-size:1.5rem;font-weight:800;color:white;margin-bottom:1rem">₹1,24,800</div>
+            <div class="mini-chart">
+              ${[35,50,45,70,65,85,60].map(h=>`<div class="mini-bar" style="height:${h}%"></div>`).join('')}
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:#64748b;margin-top:0.5rem"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+          </div>
+        </div>
+        <div class="admin-panel">
+          <div class="admin-panel-header"><span class="admin-panel-title">Bookings by Category</span></div>
+          <div style="padding:1.5rem;display:flex;flex-direction:column;gap:0.75rem">
+            ${[{name:'Cleaning',pct:35,col:'#818cf8'},{name:'Plumbing',pct:22,col:'#34d399'},{name:'Electrical',pct:18,col:'#fbbf24'},{name:'Salon',pct:14,col:'#f472b6'},{name:'Appliances',pct:11,col:'#fb923c'}].map(c=>`
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:0.3rem"><span>${c.name}</span><span>${c.pct}%</span></div>
+                <div style="height:6px;background:#334155;border-radius:3px;overflow:hidden"><div style="height:100%;width:${c.pct}%;background:${c.col};border-radius:3px"></div></div>
+              </div>`).join('')}
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-panel">
+        <div class="admin-panel-header">
+          <span class="admin-panel-title">Recent Bookings</span>
+          <button class="btn btn-ghost btn-sm" style="color:#818cf8" onclick="showATab('bookings',document.querySelector('.admin-nav-item:nth-child(2)'))">View All →</button>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Ref</th><th>Customer</th><th>Service</th><th>Date</th><th>Amount</th><th>Status</th></tr></thead>
+          <tbody id="recentBookingsTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- BOOKINGS -->
+    <div id="atab-bookings" class="hidden">
+      <div class="admin-header"><h1>All Bookings</h1></div>
+      <div class="admin-panel">
+        <div class="admin-panel-header">
+          <span class="admin-panel-title">Bookings (1,284 total)</span>
+          <input type="text" placeholder="Search..." style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:0.4rem 0.8rem;color:white;font-size:0.85rem;outline:none;font-family:'DM Sans',sans-serif">
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Ref</th><th>Customer</th><th>Service</th><th>Provider</th><th>Scheduled</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="allBookingsTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- USERS -->
+    <div id="atab-users" class="hidden">
+      <div class="admin-header"><h1>Users</h1></div>
+      <div class="admin-panel">
+        <div class="admin-panel-header"><span class="admin-panel-title">All Users (52,410)</span></div>
+        <table class="data-table">
+          <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Bookings</th><th>Joined</th><th>Status</th></tr></thead>
+          <tbody id="usersTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PROVIDERS -->
+    <div id="atab-providers" class="hidden">
+      <div class="admin-header"><h1>Service Providers</h1></div>
+      <div class="admin-panel">
+        <div class="admin-panel-header"><span class="admin-panel-title">All Providers (2,145)</span></div>
+        <table class="data-table">
+          <thead><tr><th>Name</th><th>Services</th><th>Rating</th><th>Jobs</th><th>KYC</th><th>Available</th><th>Action</th></tr></thead>
+          <tbody id="providersTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SERVICES -->
+    <div id="atab-services" class="hidden">
+      <div class="admin-header"><h1>Services</h1><button class="btn btn-primary btn-sm">+ Add Service</button></div>
+      <div class="admin-panel">
+        <table class="data-table">
+          <thead><tr><th>Service</th><th>Category</th><th>Price</th><th>Bookings</th><th>Rating</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="servicesAdminTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PAYMENTS -->
+    <div id="atab-payments" class="hidden">
+      <div class="admin-header"><h1>Payments</h1></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:1.5rem">
+        <div class="kpi-card"><div class="kpi-val">₹42.3L</div><div class="kpi-lbl">Total Collected</div></div>
+        <div class="kpi-card"><div class="kpi-val">₹3,200</div><div class="kpi-lbl">Pending Payouts</div></div>
+        <div class="kpi-card"><div class="kpi-val">12</div><div class="kpi-lbl">Failed Payments</div></div>
+      </div>
+      <div class="admin-panel">
+        <div class="admin-panel-header"><span class="admin-panel-title">Payment Transactions</span></div>
+        <table class="data-table">
+          <thead><tr><th>Booking Ref</th><th>Razorpay ID</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+          <tbody id="paymentsTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="../js/api.js"></script>
+<script>
+initNavbar();
+
+const mockBookings = [
+  {ref:'HM-A1B2C3',customer:'Priya Sharma',service:'Deep Cleaning',provider:'Ramesh K.',date:'Jan 15, 10 AM',amount:589,status:'COMPLETED'},
+  {ref:'HM-D4E5F6',customer:'Rahul Mehta',service:'Pipe Repair',provider:'Suresh S.',date:'Jan 20, 2 PM',amount:943,status:'CONFIRMED'},
+  {ref:'HM-G7H8I9',customer:'Anjali Patel',service:'AC Service',provider:'Pending',date:'Jan 25, 11 AM',amount:1769,status:'PENDING'},
+  {ref:'HM-J1K2L3',customer:'Vikram Nair',service:'Bridal Makeup',provider:'Priya B.',date:'Jan 22, 9 AM',amount:4719,status:'IN_PROGRESS'},
+  {ref:'HM-M4N5O6',customer:'Meena Kumar',service:'Fan Install',provider:'Arun E.',date:'Jan 18, 3 PM',amount:824,status:'CANCELLED'},
+];
+
+const statusColors = {COMPLETED:'dot-green',CONFIRMED:'dot-blue',PENDING:'dot-yellow',IN_PROGRESS:'dot-blue',CANCELLED:'dot-red'};
+
+function bookingRow(b) {
+  return `<tr><td style="font-weight:600;color:#818cf8">${b.ref}</td><td>${b.customer}</td><td>${b.service}</td><td>${b.provider}</td><td>${b.date}</td><td>₹${b.amount.toLocaleString('en-IN')}</td><td><span class="status-dot ${statusColors[b.status]||'dot-blue'}"></span>${b.status}</td><td><button class="btn btn-ghost btn-sm" style="color:#818cf8;font-size:0.78rem">View</button></td></tr>`;
+}
+
+document.getElementById('recentBookingsTable').innerHTML = mockBookings.slice(0,5).map(b=>`<tr><td style="font-weight:600;color:#818cf8">${b.ref}</td><td>${b.customer}</td><td>${b.service}</td><td>${b.date}</td><td>₹${b.amount.toLocaleString('en-IN')}</td><td><span class="status-dot ${statusColors[b.status]||'dot-blue'}"></span>${b.status}</td></tr>`).join('');
+document.getElementById('allBookingsTable').innerHTML = mockBookings.map(bookingRow).join('');
+
+const mockUsers = [
+  {name:'Priya Sharma',email:'priya@example.com',phone:'9876543210',role:'CUSTOMER',bookings:8,joined:'Dec 2023',active:true},
+  {name:'Rahul Mehta',email:'rahul@example.com',phone:'9876543211',role:'CUSTOMER',bookings:3,joined:'Jan 2024',active:true},
+  {name:'Ramesh Kumar',email:'ramesh@example.com',phone:'9876543212',role:'PROVIDER',bookings:127,joined:'Nov 2023',active:true},
+];
+document.getElementById('usersTable').innerHTML = mockUsers.map(u=>`<tr><td style="font-weight:600;color:white">${u.name}</td><td>${u.email}</td><td>${u.phone}</td><td><span class="badge ${u.role==='PROVIDER'?'badge-primary':'badge-success'}" style="font-size:0.72rem">${u.role}</span></td><td>${u.bookings}</td><td>${u.joined}</td><td><span class="status-dot ${u.active?'dot-green':'dot-red'}"></span>${u.active?'Active':'Inactive'}</td></tr>`).join('');
+
+const mockProviders = [
+  {name:'Ramesh Kumar',services:'Cleaning, Pest Control',rating:4.8,jobs:127,kyc:true,avail:true},
+  {name:'Suresh Singh',services:'Plumbing',rating:4.7,jobs:98,kyc:true,avail:true},
+  {name:'Arun Electrical',services:'Electrical',rating:4.6,jobs:74,kyc:false,avail:false},
+];
+document.getElementById('providersTable').innerHTML = mockProviders.map(p=>`<tr><td style="font-weight:600;color:white">${p.name}</td><td>${p.services}</td><td>⭐ ${p.rating}</td><td>${p.jobs}</td><td><span class="status-dot ${p.kyc?'dot-green':'dot-yellow'}"></span>${p.kyc?'Verified':'Pending'}</td><td><span class="status-dot ${p.avail?'dot-green':'dot-red'}"></span>${p.avail?'Yes':'No'}</td><td><button class="btn btn-ghost btn-sm" style="color:#818cf8;font-size:0.78rem">Edit</button></td></tr>`).join('');
+
+const mockServices = [
+  {name:'Deep Home Cleaning',cat:'Cleaning',price:499,bookings:1240,rating:4.8,active:true},
+  {name:'Pipe Leak Repair',cat:'Plumbing',price:799,bookings:980,rating:4.7,active:true},
+  {name:'AC Service',cat:'Appliances',price:1499,bookings:1100,rating:4.7,active:true},
+  {name:'Bridal Makeup',cat:'Salon',price:3999,bookings:432,rating:4.9,active:true},
+];
+document.getElementById('servicesAdminTable').innerHTML = mockServices.map(s=>`<tr><td style="font-weight:600;color:white">${s.name}</td><td>${s.cat}</td><td>₹${s.price}</td><td>${s.bookings.toLocaleString()}</td><td>⭐ ${s.rating}</td><td><span class="status-dot ${s.active?'dot-green':'dot-red'}"></span>${s.active?'Active':'Inactive'}</td><td><button class="btn btn-ghost btn-sm" style="color:#818cf8;font-size:0.78rem">Edit</button></td></tr>`).join('');
+
+const mockPayments = [
+  {ref:'HM-A1B2C3',rzp:'pay_MxK12345',amount:589,status:'PAID',date:'Jan 15'},
+  {ref:'HM-D4E5F6',rzp:'pay_MxK67890',amount:943,status:'PAID',date:'Jan 20'},
+  {ref:'HM-G7H8I9',rzp:'–',amount:1769,status:'CREATED',date:'Jan 25'},
+];
+document.getElementById('paymentsTable').innerHTML = mockPayments.map(p=>`<tr><td style="color:#818cf8">${p.ref}</td><td style="font-family:monospace;font-size:0.82rem">${p.rzp}</td><td>₹${p.amount}</td><td><span class="status-dot ${p.status==='PAID'?'dot-green':p.status==='FAILED'?'dot-red':'dot-yellow'}"></span>${p.status}</td><td>${p.date}</td></tr>`).join('');
+
+function showATab(tab, el) {
+  document.querySelectorAll('.admin-nav-item').forEach(a=>a.classList.remove('active'));
+  if(el) el.classList.add('active');
+  ['dashboard','bookings','users','providers','services','payments'].forEach(t=>document.getElementById('atab-'+t)?.classList.add('hidden'));
+  document.getElementById('atab-'+tab)?.classList.remove('hidden');
+}
+</script>
+</body>
+</html>

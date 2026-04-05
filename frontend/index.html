@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HomeMitra – Home Services On Demand</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    /* ── Hero ── */
+    .hero {
+      padding: 140px 0 100px;
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+      position: relative;
+      overflow: hidden;
+      color: white;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 60% 50%, rgba(99, 102, 241, 0.25) 0%, transparent 70%),
+        radial-gradient(ellipse at 20% 80%, rgba(16, 185, 129, 0.2) 0%, transparent 60%);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      position: relative;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(99, 102, 241, 0.2);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      color: #a5b4fc;
+      padding: 0.4rem 1rem;
+      border-radius: 99px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, #818cf8, #34d399);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      opacity: 0.8;
+      margin-bottom: 2.5rem;
+      line-height: 1.8;
+      max-width: 480px;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 2.5rem;
+      margin-top: 3rem;
+    }
+
+    .stat {
+      border-left: 2px solid rgba(99, 102, 241, 0.4);
+      padding-left: 1rem;
+    }
+
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+    }
+
+    .stat-lbl {
+      font-size: 0.8rem;
+      opacity: 0.6;
+      margin-top: 0.1rem;
+    }
+
+    .hero-visual {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-phone {
+      width: 280px;
+      height: 520px;
+      background: #1e293b;
+      border-radius: 40px;
+      border: 6px solid #334155;
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5), inset 0 0 0 2px rgba(255, 255, 255, 0.05);
+      position: relative;
+      overflow: hidden;
+      padding: 20px 16px;
+    }
+
+    .phone-notch {
+      width: 80px;
+      height: 22px;
+      background: #0f172a;
+      border-radius: 12px;
+      margin: 0 auto 16px;
+    }
+
+    .phone-card {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .phone-card-title {
+      font-size: 0.7rem;
+      opacity: 0.7;
+      margin-bottom: 4px;
+    }
+
+    .phone-card-val {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .phone-services {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .phone-svc {
+      background: #334155;
+      border-radius: 12px;
+      padding: 10px;
+      text-align: center;
+      font-size: 0.65rem;
+    }
+
+    .phone-svc span {
+      display: block;
+      font-size: 1.2rem;
+      margin-bottom: 4px;
+    }
+
+    .phone-book-btn {
+      margin-top: 12px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .floating-badge {
+      position: absolute;
+      background: white;
+      border-radius: 14px;
+      padding: 10px 14px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .floating-badge.one {
+      top: 60px;
+      right: -30px;
+      animation: float1 4s ease-in-out infinite;
+    }
+
+    .floating-badge.two {
+      bottom: 100px;
+      left: -40px;
+      animation: float1 4s ease-in-out infinite 1.5s;
+    }
+
+    @keyframes float1 {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(-10px)
+      }
+    }
+
+    /* ── Trust bar ── */
+    .trust-bar {
+      background: var(--light);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 1.25rem 0;
+    }
+
+    .trust-items {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--mid);
+    }
+
+    .trust-icon {
+      font-size: 1.2rem;
+    }
+
+    /* ── Categories ── */
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 1.25rem;
+    }
+
+    .cat-card {
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--transition);
+      text-decoration: none;
+      color: var(--dark);
+    }
+
+    .cat-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-4px);
+      background: var(--primary-light);
+    }
+
+    .cat-card.active {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .cat-icon {
+      font-size: 2rem;
+      margin-bottom: 0.6rem;
+      display: block;
+    }
+
+    .cat-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .cat-count {
+      font-size: 0.72rem;
+      color: var(--mid);
+      margin-top: 0.2rem;
+    }
+
+    /* ── Service Cards ── */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.75rem;
+    }
+
+    .svc-card {
+      background: white;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+      transition: all var(--transition);
+      cursor: pointer;
+    }
+
+    .svc-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow);
+      border-color: var(--primary);
+    }
+
+    .svc-img {
+      height: 160px;
+      background: linear-gradient(135deg, var(--primary-light), #e0e7ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      position: relative;
+    }
+
+    .svc-featured {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--accent);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .svc-body {
+      padding: 1.25rem;
+    }
+
+    .svc-category {
+      font-size: 0.75rem;
+      color: var(--primary);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.4rem;
+    }
+
+    .svc-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .svc-desc {
+      font-size: 0.85rem;
+      color: var(--mid);
+      margin-bottom: 0.75rem;
+      line-height: 1.5;
+    }
+
+    .svc-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .svc-price {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .svc-price small {
+      font-size: 0.72rem;
+      color: var(--mid);
+      font-weight: 400;
+    }
+
+    .svc-rating {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.8rem;
+      color: var(--mid);
+    }
+
+    .svc-duration {
+      font-size: 0.78rem;
+      color: var(--mid);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 0.5rem;
+    }
+
+    /* ── How it works ── */
+    .hiw {
+      background: linear-gradient(135deg, #f8fafc, #eef2ff);
+    }
+
+    .hiw-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+    }
+
+    .hiw-step {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      position: relative;
+    }
+
+    .hiw-step:not(:last-child)::after {
+      content: '→';
+      position: absolute;
+      right: -1rem;
+      top: 2.5rem;
+      font-size: 1.5rem;
+      color: var(--primary);
+      opacity: 0.4;
+    }
+
+    .hiw-num {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin: 0 auto 1.25rem;
+    }
+
+    .hiw-icon {
+      font-size: 1.8rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .hiw-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .hiw-desc {
+      font-size: 0.85rem;
+      color: var(--mid);
+      line-height: 1.6;
+    }
+
+    /* ── Subscriptions ── */
+    .plans-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .plan-card {
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem;
+      text-align: center;
+      transition: all var(--transition);
+      position: relative;
+    }
+
+    .plan-card.popular {
+      border-color: var(--primary);
+      transform: scale(1.03);
+      box-shadow: 0 20px 50px rgba(99, 102, 241, 0.15);
+    }
+
+    .plan-popular-tag {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--primary);
+      color: white;
+      padding: 4px 18px;
+      border-radius: 99px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .plan-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .plan-price {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin: 0.75rem 0;
+      font-family: 'Syne', sans-serif;
+    }
+
+    .plan-price small {
+      font-size: 0.9rem;
+      font-weight: 400;
+      color: var(--mid);
+    }
+
+    .plan-features {
+      list-style: none;
+      margin: 1.5rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .plan-features li {
+      font-size: 0.88rem;
+      color: var(--mid);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .plan-features li::before {
+      content: '✓';
+      color: var(--secondary);
+      font-weight: 700;
+    }
+
+    /* ── Testimonials ── */
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+
+    .testi-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 2rem;
+      border: 1px solid var(--border);
+    }
+
+    .testi-top {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .testi-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: white;
+      font-size: 1.1rem;
+    }
+
+    .testi-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .testi-loc {
+      font-size: 0.78rem;
+      color: var(--mid);
+    }
+
+    .testi-text {
+      font-size: 0.9rem;
+      color: var(--mid);
+      line-height: 1.7;
+      font-style: italic;
+    }
+
+    /* ── App Banner ── */
+    .app-banner {
+      background: linear-gradient(135deg, #0f172a, #1e1b4b);
+      color: white;
+      border-radius: var(--radius-lg);
+      padding: 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+
+    .app-btns {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .app-btn {
+      background: white;
+      color: var(--dark);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 600;
+      transition: all var(--transition);
+      cursor: pointer;
+      border: none;
+    }
+
+    .app-btn:hover {
+      background: var(--primary-light);
+      transform: translateY(-2px);
+    }
+
+    .app-phones {
+      font-size: 6rem;
+    }
+
+    /* ── Search bar ── */
+    .search-wrap {
+      position: relative;
+      max-width: 560px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 1rem 1.25rem 1rem 3rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: var(--radius);
+      color: white;
+      font-size: 1rem;
+      backdrop-filter: blur(10px);
+      transition: all var(--transition);
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .search-input::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .search-input:focus {
+      outline: none;
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0.6;
+    }
+
+    .search-results {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      right: 0;
+      background: white;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      max-height: 320px;
+      overflow-y: auto;
+      z-index: 100;
+      display: none;
+    }
+
+    .search-results.open {
+      display: block;
+    }
+
+    .search-item {
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      transition: background var(--transition);
+      border-bottom: 1px solid var(--border);
+      color: var(--dark);
+    }
+
+    .search-item:hover {
+      background: var(--light);
+    }
+
+    .search-item:last-child {
+      border-bottom: none;
+    }
+
+    @media (max-width: 1024px) {
+      .cat-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .hiw-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .hero-visual {
+        display: none;
+      }
+
+      .hero-cta {
+        justify-content: center;
+      }
+
+      .hero-stats {
+        justify-content: center;
+      }
+
+      .cat-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .plans-grid {
+        grid-template-columns: 1fr;
+        max-width: 360px;
+      }
+
+      .plan-card.popular {
+        transform: none;
+      }
+
+      .testimonials-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .app-banner {
+        flex-direction: column;
+        text-align: center;
+        padding: 2.5rem;
+      }
+
+      .app-btns {
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .cat-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="container nav-inner">
+      <a href="/index.html" class="nav-logo"><span>Home</span><span>Mitra</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="/index.html" class="active">Home</a></li>
+        <li><a href="/pages/services.html">Services</a></li>
+        <li><a href="/pages/subscriptions.html">Plans</a></li>
+        <li><a href="/pages/dashboard.html">Dashboard</a></li>
+      </ul>
+      <div class="nav-actions" id="navActions"></div>
+      <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-content">
+        <div class="hero-eyebrow">⚡ 24/7 Emergency Services Available</div>
+        <h1>Trusted Home Services<br><span>Delivered at Your<br>Doorstep</span></h1>
+        <p>Verified professionals, live tracking, and hassle-free bookings — all in one app built for Indian homes.</p>
+        <div class="search-wrap mb-3">
+          <span class="search-icon">🔍</span>
+          <input type="text" class="search-input" placeholder="Search for cleaning, plumbing, electrician..."
+            id="searchInput" autocomplete="off">
+          <div class="search-results" id="searchResults"></div>
+        </div>
+        <div class="hero-cta">
+          <a href="/pages/services.html" class="btn btn-primary btn-lg">Book a Service</a>
+          <a href="/pages/subscriptions.html" class="btn btn-secondary btn-lg"
+            style="border-color:rgba(255,255,255,0.4);color:white">View Plans</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat">
+            <div class="stat-num">50K+</div>
+            <div class="stat-lbl">Happy Customers</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">2K+</div>
+            <div class="stat-lbl">Verified Pros</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">4.8★</div>
+            <div class="stat-lbl">Average Rating</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-phone">
+          <div class="phone-notch"></div>
+          <div class="phone-card">
+            <div class="phone-card-title">Upcoming Booking</div>
+            <div class="phone-card-val">Deep Cleaning</div>
+            <div style="font-size:0.65rem;opacity:0.7;margin-top:4px">Tomorrow, 10:00 AM · Priya R.</div>
+          </div>
+          <div class="phone-services">
+            <div class="phone-svc"><span>🧹</span>Cleaning</div>
+            <div class="phone-svc"><span>🚿</span>Plumbing</div>
+            <div class="phone-svc"><span>🔌</span>Electrical</div>
+            <div class="phone-svc"><span>💅</span>Salon</div>
+          </div>
+          <div style="margin-top:12px;background:#1e293b;border-radius:12px;padding:10px">
+            <div style="font-size:0.65rem;color:#94a3b8;margin-bottom:6px">Provider en route</div>
+            <div
+              style="height:60px;background:#0f172a;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:#6366f1">
+              📍 Live Tracking</div>
+          </div>
+          <div class="phone-book-btn">⚡ Book Emergency Service</div>
+        </div>
+        <div class="floating-badge one">⭐ 4.9 · Just reviewed</div>
+        <div class="floating-badge two">✅ Verified Pro assigned</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST BAR -->
+  <div class="trust-bar">
+    <div class="container trust-items">
+      <div class="trust-item"><span class="trust-icon">🛡️</span> Verified Professionals</div>
+      <div class="trust-item"><span class="trust-icon">📍</span> Live GPS Tracking</div>
+      <div class="trust-item"><span class="trust-icon">💸</span> Transparent Pricing</div>
+      <div class="trust-item"><span class="trust-icon">🔄</span> Free Cancellation</div>
+      <div class="trust-item"><span class="trust-icon">⏱️</span> On-time Guarantee</div>
+      <div class="trust-item"><span class="trust-icon">💳</span> Secure Payments</div>
+    </div>
+  </div>
+
+  <!-- CATEGORIES -->
+  <section class="section">
+    <div class="container">
+      <div class="text-center mb-3">
+        <p class="badge badge-primary mb-2">Our Services</p>
+        <h2 class="section-title">Browse by Category</h2>
+        <p class="section-sub">From quick fixes to full home makeovers — we've got it covered</p>
+      </div>
+      <div class="cat-grid" id="catGrid">
+        <!-- JS populated -->
+        <div class="cat-card skeleton" style="height:130px"></div>
+        <div class="cat-card skeleton" style="height:130px"></div>
+        <div class="cat-card skeleton" style="height:130px"></div>
+        <div class="cat-card skeleton" style="height:130px"></div>
+        <div class="cat-card skeleton" style="height:130px"></div>
+        <div class="cat-card skeleton" style="height:130px"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED SERVICES -->
+  <section class="section" style="background:var(--light)">
+    <div class="container">
+      <div class="text-center mb-3">
+        <p class="badge badge-primary mb-2">Top Picks</p>
+        <h2 class="section-title">Most Booked Services</h2>
+        <p class="section-sub">Trusted by thousands of homes across the city</p>
+      </div>
+      <div class="services-grid" id="servicesGrid">
+        <!-- skeleton -->
+      </div>
+      <div class="text-center mt-3">
+        <a href="/pages/services.html" class="btn btn-secondary btn-lg">View All Services →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="section hiw">
+    <div class="container">
+      <div class="text-center mb-3">
+        <p class="badge badge-primary mb-2">Simple Process</p>
+        <h2 class="section-title">How HomeMitra Works</h2>
+        <p class="section-sub">Get professional help in just 4 easy steps</p>
+      </div>
+      <div class="hiw-grid">
+        <div class="hiw-step">
+          <div class="hiw-num">1</div>
+          <div class="hiw-icon">🔍</div>
+          <div class="hiw-title">Choose a Service</div>
+          <div class="hiw-desc">Browse our wide range of home services and pick what you need</div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-num">2</div>
+          <div class="hiw-icon">📅</div>
+          <div class="hiw-title">Pick a Slot</div>
+          <div class="hiw-desc">Select a date and time that works best for you — even same-day</div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-num">3</div>
+          <div class="hiw-icon">✅</div>
+          <div class="hiw-title">Get Confirmed</div>
+          <div class="hiw-desc">A verified professional is assigned and you get live updates</div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-num">4</div>
+          <div class="hiw-icon">⭐</div>
+          <div class="hiw-title">Pay & Review</div>
+          <div class="hiw-desc">Pay securely after the job is done and share your feedback</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUBSCRIPTION PLANS -->
+  <section class="section">
+    <div class="container">
+      <div class="text-center mb-3">
+        <p class="badge badge-primary mb-2">Save More</p>
+        <h2 class="section-title">Membership Plans</h2>
+        <p class="section-sub">Subscribe and unlock exclusive discounts on every booking</p>
+      </div>
+      <div class="plans-grid" id="plansGrid">
+        <!-- JS populated -->
+        <div class="plan-card skeleton" style="height:400px"></div>
+        <div class="plan-card skeleton" style="height:400px"></div>
+        <div class="plan-card skeleton" style="height:400px"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section" style="background:var(--light)">
+    <div class="container">
+      <div class="text-center mb-3">
+        <p class="badge badge-primary mb-2">Customer Stories</p>
+        <h2 class="section-title">What Our Customers Say</h2>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testi-card">
+          <div class="testi-top">
+            <div class="testi-avatar" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">P</div>
+            <div>
+              <div class="testi-name">Priya Sharma</div>
+              <div class="testi-loc">📍 Pune, Maharashtra</div>
+            </div>
+          </div>
+          <div class="stars mb-2">${renderStarsHTML(5)}</div>
+          <p class="testi-text">"HomeMitra has made home maintenance so effortless. The deep cleaning team was thorough
+            and professional. Booked at 9 PM, service at 8 AM next day!"</p>
+        </div>
+        <div class="testi-card">
+          <div class="testi-top">
+            <div class="testi-avatar" style="background:linear-gradient(135deg,#10b981,#059669)">R</div>
+            <div>
+              <div class="testi-name">Rahul Mehta</div>
+              <div class="testi-loc">📍 Mumbai, Maharashtra</div>
+            </div>
+          </div>
+          <div class="stars mb-2">${renderStarsHTML(5)}</div>
+          <p class="testi-text">"The plumber arrived in under 2 hours during an emergency leak. Fixed everything
+            cleanly. Transparent pricing — what you see is what you pay."</p>
+        </div>
+        <div class="testi-card">
+          <div class="testi-top">
+            <div class="testi-avatar" style="background:linear-gradient(135deg,#f59e0b,#d97706)">A</div>
+            <div>
+              <div class="testi-name">Anjali Patel</div>
+              <div class="testi-loc">📍 Bangalore, Karnataka</div>
+            </div>
+          </div>
+          <div class="stars mb-2">${renderStarsHTML(4)}</div>
+          <p class="testi-text">"Salon at Home service was absolutely wonderful! The beautician was skilled and brought
+            all her own equipment. Much better than going to the salon."</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APP BANNER -->
+  <section class="section-sm">
+    <div class="container">
+      <div class="app-banner">
+        <div>
+          <p class="badge badge-primary mb-2" style="background:rgba(99,102,241,0.2);color:#a5b4fc">Mobile App</p>
+          <h2 style="font-size:2rem;margin-bottom:0.75rem">Book Services on the Go</h2>
+          <p style="opacity:0.7;max-width:400px">Download the HomeMitra app for real-time tracking, instant
+            notifications, and exclusive app-only deals.</p>
+          <div class="app-btns">
+            <button class="app-btn">📱 App Store</button>
+            <button class="app-btn">🤖 Google Play</button>
+          </div>
+        </div>
+        <div class="app-phones">📱</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="nav-logo"><span>Home</span><span>Mitra</span></div>
+          <p>India's most trusted home services platform. Connecting verified professionals with homeowners across the
+            country.</p>
+          <div class="social-links">
+            <a class="social-link" href="#">fb</a>
+            <a class="social-link" href="#">tw</a>
+            <a class="social-link" href="#">in</a>
+            <a class="social-link" href="#">ig</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="#">Cleaning</a></li>
+            <li><a href="#">Plumbing</a></li>
+            <li><a href="#">Electrical</a></li>
+            <li><a href="#">Salon at Home</a></li>
+            <li><a href="#">Pest Control</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Partner with Us</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <ul>
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Refund Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2024 HomeMitra Technologies Pvt. Ltd. All rights reserved.</span>
+        <span>Made with ❤️ in India 🇮🇳</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script>
+    function renderStarsHTML(r) {
+      return Array.from({ length: 5 }, (_, i) => `<span class="star${i < r ? '' : ' empty'}">★</span>`).join('');
+    }
+    document.querySelectorAll('.stars').forEach(el => {
+      if (el.textContent.includes('${renderStarsHTML')) {
+        el.innerHTML = renderStarsHTML(5);
+      }
+    });
+
+    // Navbar
+    initNavbar();
+
+    // Load categories
+    api.categories.all().then(res => {
+      const grid = document.getElementById('catGrid');
+      grid.innerHTML = res.data.map(c => `
+    <a href="/pages/services.html?category=${c.id}" class="cat-card">
+      <span class="cat-icon">${c.icon}</span>
+      <div class="cat-name">${c.name}</div>
+    </a>`).join('');
+    }).catch(() => {
+      document.getElementById('catGrid').innerHTML = [
+        { icon: '🧹', name: 'Cleaning' }, { icon: '🚿', name: 'Plumbing' },
+        { icon: '🔌', name: 'Electrical' }, { icon: '💅', name: 'Salon' },
+        { icon: '🔧', name: 'Appliances' }, { icon: '🐛', name: 'Pest Control' }
+      ].map(c => `<a href="/pages/services.html" class="cat-card"><span class="cat-icon">${c.icon}</span><div class="cat-name">${c.name}</div></a>`).join('');
+    });
+
+    // Load featured services
+    const sgrid = document.getElementById('servicesGrid');
+    sgrid.innerHTML = skeletonCard(4);
+    api.services.featured().then(res => {
+      sgrid.innerHTML = res.data.map(s => `
+    <div class="svc-card" onclick="location.href='/pages/service-detail.html?slug=${s.slug}'">
+      <div class="svc-img">
+        ${s.imageUrl ? `<img src="${s.imageUrl}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover">` : `<span>${s.categoryIcon || '🏠'}</span>`}
+        ${s.featured ? '<span class="svc-featured">⭐ Popular</span>' : ''}
+      </div>
+      <div class="svc-body">
+        <div class="svc-category">${s.categoryName}</div>
+        <div class="svc-name">${s.name}</div>
+        <div class="svc-desc">${s.shortDesc || ''}</div>
+        <div class="svc-meta">
+          <div class="svc-price">${formatPrice(s.basePrice)} <small>onwards</small></div>
+          <div class="svc-rating">${renderStarsHTML(Math.round(s.ratingAvg || 4))} ${(s.ratingAvg || 4.5).toFixed(1)}</div>
+        </div>
+        <div class="svc-duration">⏱️ ${s.durationMins} mins</div>
+      </div>
+    </div>`).join('');
+    }).catch(() => {
+      const mock = [
+        { icon: '🧹', name: 'Deep Home Cleaning', cat: 'Cleaning', price: 499, rating: 4.8, dur: 120, desc: 'Full home deep clean with professional equipment' },
+        { icon: '🚿', name: 'Pipe Leak Repair', cat: 'Plumbing', price: 799, rating: 4.7, dur: 60, desc: 'Fix leaks, unclog drains quickly and cleanly' },
+        { icon: '🔌', name: 'Fan Installation', cat: 'Electrical', price: 699, rating: 4.6, dur: 45, desc: 'Ceiling and exhaust fan fitting by certified electricians' },
+        { icon: '💅', name: 'Bridal Makeup', cat: 'Salon', price: 3999, rating: 4.9, dur: 180, desc: 'Professional bridal look by certified beauticians' },
+      ];
+      sgrid.innerHTML = mock.map(s => `
+    <div class="svc-card" onclick="location.href='/pages/services.html'">
+      <div class="svc-img"><span>${s.icon}</span><span class="svc-featured">⭐ Popular</span></div>
+      <div class="svc-body">
+        <div class="svc-category">${s.cat}</div>
+        <div class="svc-name">${s.name}</div>
+        <div class="svc-desc">${s.desc}</div>
+        <div class="svc-meta">
+          <div class="svc-price">${formatPrice(s.price)} <small>onwards</small></div>
+          <div class="svc-rating">${renderStarsHTML(5)} ${s.rating}</div>
+        </div>
+        <div class="svc-duration">⏱️ ${s.dur} mins</div>
+      </div>
+    </div>`).join('');
+    });
+
+    // Load plans
+    const plansData = [
+      { name: 'Silver', price: 299, dur: '30 days', disc: '5%', features: ['5% off all services', 'Priority support', 'Free cancellation'] },
+      { name: 'Gold', price: 599, dur: '90 days', disc: '10%', features: ['10% off all services', 'Priority matching', 'Free cancellation', '1 free inspection'], popular: true },
+      { name: 'Platinum', price: 999, dur: '1 year', disc: '20%', features: ['20% off all services', 'Dedicated manager', 'Quarterly free inspection', 'Emergency priority'] },
+    ];
+    document.getElementById('plansGrid').innerHTML = plansData.map(p => `
+  <div class="plan-card${p.popular ? ' popular' : ''}">
+    ${p.popular ? '<div class="plan-popular-tag">Most Popular</div>' : ''}
+    <div class="plan-name">${p.name}</div>
+    <div style="font-size:0.8rem;color:var(--mid)">${p.dur}</div>
+    <div class="plan-price">₹${p.price}<small>/plan</small></div>
+    <div class="badge badge-success mb-2">Save ${p.disc} on every booking</div>
+    <ul class="plan-features">${p.features.map(f => `<li>${f}</li>`).join('')}</ul>
+    <a href="/pages/subscriptions.html" class="btn ${p.popular ? 'btn-primary' : 'btn-secondary'} btn-full">Get ${p.name}</a>
+  </div>`).join('');
+
+    // Search
+    let searchTimer;
+    document.getElementById('searchInput').addEventListener('input', e => {
+      clearTimeout(searchTimer);
+      const q = e.target.value.trim();
+      const results = document.getElementById('searchResults');
+      if (!q) { results.classList.remove('open'); return; }
+      searchTimer = setTimeout(() => {
+        api.services.search(q).then(res => {
+          if (!res.data.length) { results.innerHTML = '<div class="search-item" style="color:var(--mid)">No results found</div>'; }
+          else results.innerHTML = res.data.slice(0, 6).map(s =>
+            `<div class="search-item" onclick="location.href='/pages/service-detail.html?slug=${s.slug}'">
+          <span style="font-size:1.3rem">${s.categoryIcon || '🏠'}</span>
+          <div><div style="font-weight:600;font-size:0.9rem">${s.name}</div><div style="font-size:0.78rem;color:var(--mid)">${s.categoryName} · ${formatPrice(s.basePrice)}</div></div>
+         </div>`).join('');
+          results.classList.add('open');
+        }).catch(() => { });
+      }, 350);
+    });
+
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.search-wrap')) document.getElementById('searchResults').classList.remove('open');
+    });
+  </script>
+</body>
+
+</html>

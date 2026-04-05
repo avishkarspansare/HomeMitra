@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Service Detail – HomeMitra</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <style>
+    body {
+      padding-top: 70px;
+    }
+
+    .detail-hero {
+      background: linear-gradient(135deg, #0f172a, #1e1b4b);
+      color: white;
+      padding: 3rem 0;
+    }
+
+    .breadcrumb {
+      font-size: 0.82rem;
+      color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 1.25rem;
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+    }
+
+    .breadcrumb a {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .breadcrumb a:hover {
+      color: white;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 3rem;
+      padding: 3rem 0;
+      align-items: start;
+    }
+
+    .detail-icon-box {
+      width: 100%;
+      height: 260px;
+      background: linear-gradient(135deg, var(--primary-light), #e0e7ff);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 7rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border);
+    }
+
+    .section-block {
+      background: white;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-block h3 {
+      font-size: 1.1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .includes-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .includes-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+      color: var(--mid);
+    }
+
+    .includes-item::before {
+      content: '✓';
+      color: var(--secondary);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .booking-card {
+      position: sticky;
+      top: 90px;
+      background: white;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .booking-card-header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 1.5rem;
+    }
+
+    .booking-card-price {
+      font-size: 2rem;
+      font-weight: 800;
+    }
+
+    .booking-card-price small {
+      font-size: 0.9rem;
+      font-weight: 400;
+      opacity: 0.8;
+    }
+
+    .booking-card-body {
+      padding: 1.5rem;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.88rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .detail-row:last-child {
+      border-bottom: none;
+    }
+
+    .detail-row span:last-child {
+      font-weight: 600;
+    }
+
+    .reviews-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .review-item {
+      padding: 1.25rem;
+      background: var(--light);
+      border-radius: var(--radius-sm);
+    }
+
+    .review-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.6rem;
+    }
+
+    .reviewer {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .reviewer-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .reviewer-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .review-date {
+      font-size: 0.75rem;
+      color: var(--mid);
+      margin-top: 0.1rem;
+    }
+
+    .review-text {
+      font-size: 0.88rem;
+      color: var(--mid);
+      line-height: 1.6;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 5000;
+      backdrop-filter: blur(6px);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-box {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      max-width: 520px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(40px);
+        opacity: 0
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1
+      }
+    }
+
+    .modal-title {
+      font-size: 1.4rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .modal-subtitle {
+      color: var(--mid);
+      font-size: 0.88rem;
+      margin-bottom: 2rem;
+    }
+
+    .price-breakdown {
+      background: var(--light);
+      border-radius: var(--radius-sm);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .price-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .price-row.total {
+      font-weight: 700;
+      font-size: 1rem;
+      border-top: 1px dashed var(--border);
+      padding-top: 0.5rem;
+      margin-top: 0.25rem;
+      color: var(--primary);
+    }
+
+    @media (max-width: 900px) {
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .booking-card {
+        position: static;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="container nav-inner">
+      <a href="/index.html" class="nav-logo"><span>Home</span><span>Mitra</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/pages/services.html" class="active">Services</a></li>
+        <li><a href="/pages/subscriptions.html">Plans</a></li>
+      </ul>
+      <div class="nav-actions" id="navActions"></div>
+      <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+    </div>
+  </nav>
+
+  <div class="detail-hero">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="/index.html">Home</a> ›
+        <a href="/pages/services.html">Services</a> ›
+        <span id="breadcrumbName">...</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap">
+        <div style="font-size:3.5rem" id="heroIcon">🏠</div>
+        <div>
+          <h1 id="heroTitle" style="font-size:2.2rem;margin-bottom:0.4rem">Loading...</h1>
+          <div style="display:flex;gap:1.5rem;flex-wrap:wrap;opacity:0.8;font-size:0.88rem">
+            <span>📂 <span id="heroCategory"></span></span>
+            <span>⭐ <span id="heroRating"></span></span>
+            <span>📦 <span id="heroBookings"></span> bookings</span>
+            <span>⏱️ <span id="heroDuration"></span> mins</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="detail-grid">
+      <div>
+        <div class="detail-icon-box" id="serviceIconBox">🏠</div>
+        <div class="section-block">
+          <h3>About This Service</h3>
+          <p id="serviceDesc" style="color:var(--mid);line-height:1.8;font-size:0.95rem">Loading...</p>
+        </div>
+        <div class="section-block">
+          <h3>What's Included</h3>
+          <div class="includes-list" id="includesList"></div>
+        </div>
+        <div class="section-block">
+          <h3>Customer Reviews</h3>
+          <div class="reviews-grid" id="reviewsGrid">
+            <div class="skeleton" style="height:100px;border-radius:12px"></div>
+            <div class="skeleton" style="height:100px;border-radius:12px"></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="booking-card">
+          <div class="booking-card-header">
+            <div style="font-size:0.8rem;opacity:0.8;margin-bottom:4px">Starting from</div>
+            <div class="booking-card-price" id="cardPrice">₹499 <small>+ taxes</small></div>
+            <div style="font-size:0.78rem;opacity:0.7;margin-top:0.25rem" id="cardDuration">⏱️ 60 mins service</div>
+          </div>
+          <div class="booking-card-body">
+            <div class="detail-row"><span>Base price</span><span id="bprice">₹499</span></div>
+            <div class="detail-row"><span>Tax (18% GST)</span><span id="btax">₹89.82</span></div>
+            <div class="detail-row" style="color:var(--primary);font-weight:700"><span>Total</span><span
+                id="btotal">₹588.82</span></div>
+            <button class="btn btn-primary btn-full btn-lg mt-2" id="bookBtn" onclick="openBooking()">📅 Book
+              Now</button>
+            <button class="btn btn-secondary btn-full mt-2" onclick="openBooking()">⚡ Emergency Booking</button>
+            <div style="text-align:center;font-size:0.78rem;color:var(--mid);margin-top:1rem">🔒 Secure payment · ✅
+              Verified pro · 🔄 Free cancellation</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOOKING MODAL -->
+  <div class="modal-overlay" id="bookingModal">
+    <div class="modal-box">
+      <h2 class="modal-title">Book Service</h2>
+      <p class="modal-subtitle" id="bookingModalSub">Complete your booking below</p>
+      <form id="bookingForm">
+        <div class="form-group">
+          <label class="form-label">Service Date & Time</label>
+          <input type="datetime-local" class="form-control" id="bookingDate" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Service Address</label>
+          <textarea class="form-control" id="bookingAddress" rows="2" placeholder="Full address with pincode" required
+            style="resize:none"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Special Instructions <small style="color:var(--mid)">(optional)</small></label>
+          <textarea class="form-control" id="bookingNotes" rows="2"
+            placeholder="Any specific instructions for the professional..." style="resize:none"></textarea>
+        </div>
+        <div class="price-breakdown">
+          <div class="price-row"><span>Base Price</span><span id="mb_base">₹499</span></div>
+          <div class="price-row"><span>GST (18%)</span><span id="mb_tax">₹89.82</span></div>
+          <div class="price-row total"><span>Total Payable</span><span id="mb_total">₹588.82</span></div>
+        </div>
+        <div style="display:flex;gap:1rem">
+          <button type="button" class="btn btn-ghost btn-full" onclick="closeBooking()">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-full" id="confirmBtn">Confirm & Pay</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- <script src="https://checkout.razorpay.com/v1/checkout.js"></script> -->
+  <script src="https://checkout.razorpay.com/v1/payment-button.js" data-payment_button_id="" async> </script>
+  <script src="../js/api.js"></script>
+  <script>
+    initNavbar();
+    let currentService = null;
+
+    function renderStarsHTML(r) { return Array.from({ length: 5 }, (_, i) => `<span class="star${i < r ? '' : ' empty'}">★</span>`).join(''); }
+
+    // Set min date to tomorrow
+    const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1); tomorrow.setHours(8, 0, 0, 0);
+    document.getElementById('bookingDate').min = tomorrow.toISOString().slice(0, 16);
+    document.getElementById('bookingDate').value = tomorrow.toISOString().slice(0, 16);
+
+    const slug = new URLSearchParams(location.search).get('slug') || 'deep-home-cleaning';
+
+    api.services.bySlug(slug).then(res => {
+      const s = res.data;
+      loadService(s);
+    }).catch(() => {
+      const mock = { slug, name: 'Deep Home Cleaning', shortDesc: 'Complete home cleaning', description: 'Our deep cleaning service covers every corner of your home — dusting, mopping, bathroom sanitisation, kitchen cleaning, and more. Trained professionals use premium eco-friendly products.', basePrice: 499, durationMins: 120, ratingAvg: 4.8, totalBookings: 1240, featured: true, categoryName: 'Cleaning', categoryIcon: '🧹' };
+      loadService(mock);
+    });
+
+    function loadService(s) {
+      currentService = s;
+      document.title = s.name + ' – HomeMitra';
+      document.getElementById('breadcrumbName').textContent = s.name;
+      document.getElementById('heroTitle').textContent = s.name;
+      document.getElementById('heroIcon').textContent = s.categoryIcon || '🏠';
+      document.getElementById('heroCategory').textContent = s.categoryName;
+      document.getElementById('heroRating').textContent = (s.ratingAvg || 4.8).toFixed(1);
+      document.getElementById('heroBookings').textContent = (s.totalBookings || 0).toLocaleString();
+      document.getElementById('heroDuration').textContent = s.durationMins;
+      document.getElementById('serviceIconBox').innerHTML = s.imageUrl ? `<img src="${s.imageUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:24px">` : `<span>${s.categoryIcon || '🏠'}</span>`;
+      document.getElementById('serviceDesc').textContent = s.description || s.shortDesc || 'Professional service delivered by verified experts.';
+      const tax = s.basePrice * 0.18;
+      const total = s.basePrice + tax;
+      document.getElementById('cardPrice').innerHTML = `${formatPrice(s.basePrice)} <small>+ taxes</small>`;
+      document.getElementById('cardDuration').textContent = `⏱️ ${s.durationMins} mins service`;
+      document.getElementById('bprice').textContent = formatPrice(s.basePrice);
+      document.getElementById('btax').textContent = formatPrice(tax.toFixed(2));
+      document.getElementById('btotal').textContent = formatPrice(total.toFixed(2));
+      document.getElementById('mb_base').textContent = formatPrice(s.basePrice);
+      document.getElementById('mb_tax').textContent = formatPrice(tax.toFixed(2));
+      document.getElementById('mb_total').textContent = formatPrice(total.toFixed(2));
+      document.getElementById('bookingModalSub').textContent = `Booking: ${s.name} · ${formatPrice(total.toFixed(2))}`;
+
+      const includes = [
+        'Trained & background-verified professional',
+        'All equipment and supplies included',
+        'Quality check on completion',
+        'Free re-service if unsatisfied',
+        'GST invoice provided',
+      ];
+      document.getElementById('includesList').innerHTML = includes.map(i => `<div class="includes-item">${i}</div>`).join('');
+
+      // Mock reviews
+      const reviews = [
+        { name: 'Priya S.', rating: 5, comment: 'Excellent service! The team was very thorough and left my home spotless.', date: '2 days ago' },
+        { name: 'Rahul M.', rating: 4, comment: 'Good service, arrived on time. Minor missed spot in the bathroom but overall happy.', date: '1 week ago' },
+        { name: 'Sunita K.', rating: 5, comment: 'Highly recommended! Will definitely book again. Very professional.', date: '2 weeks ago' },
+      ];
+      document.getElementById('reviewsGrid').innerHTML = reviews.map(r => `
+    <div class="review-item">
+      <div class="review-header">
+        <div class="reviewer">
+          <div class="reviewer-avatar">${r.name.charAt(0)}</div>
+          <div><div class="reviewer-name">${r.name}</div><div class="review-date">${r.date}</div></div>
+        </div>
+        <div class="stars">${renderStarsHTML(r.rating)}</div>
+      </div>
+      <div class="review-text">${r.comment}</div>
+    </div>`).join('');
+    }
+
+    function openBooking() {
+      if (!Auth.loggedIn()) { Toast.show('Please login to book a service', 'warning'); setTimeout(() => location.href = '/pages/login.html', 1200); return; }
+      document.getElementById('bookingModal').classList.add('open');
+    }
+    function closeBooking() { document.getElementById('bookingModal').classList.remove('open'); }
+
+    document.getElementById('bookingForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = document.getElementById('confirmBtn');
+      btn.disabled = true; btn.textContent = 'Processing...';
+      try {
+        // In production: create booking via API, then open Razorpay
+        // For demo: show success toast
+        Toast.show('Booking confirmed! Redirecting to payment...', 'success');
+        closeBooking();
+        setTimeout(() => { window.location.href = '/pages/dashboard.html'; }, 1800);
+      } catch {
+        btn.disabled = false; btn.textContent = 'Confirm & Pay';
+      }
+    });
+
+    document.getElementById('bookingModal').addEventListener('click', e => {
+      if (e.target === document.getElementById('bookingModal')) closeBooking();
+    });
+  </script>
+</body>
+
+</html>

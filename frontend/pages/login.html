@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login – HomeMitra</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <style>
+    body { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+    .auth-wrap { display: grid; grid-template-columns: 1fr 1fr; max-width: 900px; width: 100%; background: white; border-radius: 28px; overflow: hidden; box-shadow: 0 40px 80px rgba(0,0,0,0.4); }
+    .auth-side { background: linear-gradient(135deg, #6366f1, #10b981); padding: 3rem; color: white; display: flex; flex-direction: column; justify-content: center; }
+    .auth-side h2 { font-size: 2rem; margin-bottom: 1rem; }
+    .auth-side p { opacity: 0.85; line-height: 1.8; margin-bottom: 2rem; }
+    .auth-features { display: flex; flex-direction: column; gap: 0.75rem; }
+    .auth-feat { display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem; }
+    .auth-feat span:first-child { width: 32px; height: 32px; background: rgba(255,255,255,0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .auth-form-side { padding: 3rem; }
+    .auth-logo { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; margin-bottom: 2rem; }
+    .auth-logo span:first-child { color: var(--primary); }
+    .auth-logo span:last-child { color: var(--secondary); }
+    .auth-title { font-size: 1.7rem; margin-bottom: 0.4rem; }
+    .auth-sub { color: var(--mid); font-size: 0.9rem; margin-bottom: 2rem; }
+    .divider { display: flex; align-items: center; gap: 1rem; margin: 1.5rem 0; color: var(--mid); font-size: 0.85rem; }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .social-auth { display: flex; gap: 0.75rem; }
+    .social-auth-btn { flex: 1; padding: 0.7rem; border: 2px solid var(--border); border-radius: var(--radius-sm); background: white; cursor: pointer; font-size: 0.85rem; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all var(--transition); font-family: 'DM Sans', sans-serif; }
+    .social-auth-btn:hover { border-color: var(--primary); background: var(--primary-light); }
+    .auth-switch { text-align: center; margin-top: 1.5rem; font-size: 0.88rem; color: var(--mid); }
+    .auth-switch a { color: var(--primary); font-weight: 600; }
+    .input-wrap { position: relative; }
+    .input-wrap .form-control { padding-right: 2.8rem; }
+    .input-icon { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--mid); user-select: none; }
+    @media (max-width: 640px) {
+      .auth-wrap { grid-template-columns: 1fr; }
+      .auth-side { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="auth-wrap">
+  <div class="auth-side">
+    <h2>Welcome back to HomeMitra</h2>
+    <p>Your trusted partner for all home services — verified, reliable, and on time.</p>
+    <div class="auth-features">
+      <div class="auth-feat"><span>🛡️</span><span>100% Verified Professionals</span></div>
+      <div class="auth-feat"><span>📍</span><span>Live GPS Tracking</span></div>
+      <div class="auth-feat"><span>💸</span><span>Transparent Pricing, No Hidden Fees</span></div>
+      <div class="auth-feat"><span>⭐</span><span>4.8/5 Average Customer Rating</span></div>
+    </div>
+  </div>
+  <div class="auth-form-side">
+    <div class="auth-logo"><span>Home</span><span>Mitra</span></div>
+    <h1 class="auth-title">Sign in</h1>
+    <p class="auth-sub">Don't have an account? <a href="/pages/register.html" style="color:var(--primary);font-weight:600">Create one →</a></p>
+
+    <div class="social-auth">
+      <button class="social-auth-btn">🔵 Google</button>
+      <button class="social-auth-btn">🔷 Facebook</button>
+    </div>
+    <div class="divider">or continue with email</div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label class="form-label">Email address</label>
+        <input type="email" class="form-control" id="email" placeholder="you@example.com" required>
+        <div class="form-error hidden" id="emailErr"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" style="display:flex;justify-content:space-between">
+          <span>Password</span><a href="#" style="font-size:0.82rem;color:var(--primary)">Forgot password?</a>
+        </label>
+        <div class="input-wrap">
+          <input type="password" class="form-control" id="password" placeholder="••••••••" required>
+          <span class="input-icon" id="togglePwd">👁</span>
+        </div>
+        <div class="form-error hidden" id="pwdErr"></div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-full btn-lg" id="loginBtn">
+        <span id="loginBtnText">Sign In</span>
+        <span id="loginSpinner" class="spinner hidden" style="width:18px;height:18px;border-width:2px"></span>
+      </button>
+    </form>
+    <div class="auth-switch">By signing in, you agree to our <a href="#">Terms</a> & <a href="#">Privacy Policy</a></div>
+  </div>
+</div>
+<script src="../js/api.js"></script>
+<script>
+  if (Auth.loggedIn()) window.location.href = '/index.html';
+
+  document.getElementById('togglePwd').addEventListener('click', () => {
+    const pwd = document.getElementById('password');
+    pwd.type = pwd.type === 'password' ? 'text' : 'password';
+  });
+
+  document.getElementById('loginForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = document.getElementById('loginBtn');
+    const spinner = document.getElementById('loginSpinner');
+    const txt = document.getElementById('loginBtnText');
+    btn.disabled = true; spinner.classList.remove('hidden'); txt.textContent = 'Signing in...';
+    try {
+      const res = await api.auth.login({ email: document.getElementById('email').value, password: document.getElementById('password').value });
+      Auth.save(res.data);
+      Toast.show('Welcome back, ' + res.data.fullName + '! 👋', 'success');
+      setTimeout(() => {
+        const role = res.data.role;
+        if (role === 'ADMIN') window.location.href = '/pages/admin.html';
+        else if (role === 'PROVIDER') window.location.href = '/pages/provider-dashboard.html';
+        else window.location.href = '/pages/dashboard.html';
+      }, 800);
+    } catch(err) {
+      btn.disabled = false; spinner.classList.add('hidden'); txt.textContent = 'Sign In';
+    }
+  });
+</script>
+</body>
+</html>

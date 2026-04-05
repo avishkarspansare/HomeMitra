@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Dashboard – HomeMitra</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <style>
+    body { background: var(--light); padding-top: 70px; }
+    .dash-layout { display: grid; grid-template-columns: 260px 1fr; gap: 2rem; padding: 2rem 0 4rem; align-items: start; }
+    .sidebar { background: white; border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; position: sticky; top: 90px; }
+    .sidebar-profile { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 2rem; text-align: center; }
+    .profile-avatar { width: 72px; height: 72px; border-radius: 50%; background: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 800; margin: 0 auto 1rem; border: 3px solid rgba(255,255,255,0.4); }
+    .profile-name { font-weight: 700; font-size: 1.05rem; margin-bottom: 0.2rem; }
+    .profile-email { font-size: 0.78rem; opacity: 0.8; }
+    .sidebar-nav { padding: 1rem 0; }
+    .sidebar-nav a { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1.5rem; font-size: 0.9rem; font-weight: 500; color: var(--mid); transition: all var(--transition); border-left: 3px solid transparent; }
+    .sidebar-nav a:hover { color: var(--primary); background: var(--primary-light); border-left-color: var(--primary); }
+    .sidebar-nav a.active { color: var(--primary); background: var(--primary-light); border-left-color: var(--primary); font-weight: 600; }
+    .sidebar-nav .nav-icon { width: 22px; text-align: center; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; margin-bottom: 2rem; }
+    .stat-card { background: white; border-radius: var(--radius); border: 1px solid var(--border); padding: 1.5rem; }
+    .stat-card-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 1rem; }
+    .stat-card-val { font-size: 1.9rem; font-weight: 800; font-family: 'Syne',sans-serif; }
+    .stat-card-lbl { font-size: 0.82rem; color: var(--mid); margin-top: 0.2rem; }
+    .stat-card-change { font-size: 0.75rem; margin-top: 0.4rem; }
+    .change-up { color: var(--secondary); }
+    .tab-bar { display: flex; gap: 0.5rem; background: white; border-radius: var(--radius-sm); padding: 4px; border: 1px solid var(--border); margin-bottom: 1.5rem; width: fit-content; }
+    .tab { padding: 0.5rem 1.25rem; border-radius: 8px; cursor: pointer; font-size: 0.88rem; font-weight: 500; color: var(--mid); border: none; background: transparent; font-family: 'DM Sans',sans-serif; transition: all var(--transition); }
+    .tab.active { background: var(--primary); color: white; }
+    .booking-row { background: white; border-radius: var(--radius); border: 1px solid var(--border); padding: 1.25rem 1.5rem; display: grid; grid-template-columns: auto 1fr auto auto; gap: 1.25rem; align-items: center; margin-bottom: 0.75rem; transition: all var(--transition); }
+    .booking-row:hover { border-color: var(--primary); box-shadow: var(--shadow-sm); }
+    .booking-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; background: var(--primary-light); flex-shrink: 0; }
+    .booking-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.2rem; }
+    .booking-meta { font-size: 0.8rem; color: var(--mid); }
+    .booking-amount { font-weight: 700; color: var(--primary); font-size: 1rem; text-align: right; }
+    .booking-date { font-size: 0.75rem; color: var(--mid); }
+    .address-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; }
+    .addr-card { background: white; border-radius: var(--radius); border: 2px solid var(--border); padding: 1.25rem; cursor: pointer; transition: all var(--transition); position: relative; }
+    .addr-card:hover { border-color: var(--primary); }
+    .addr-card.default { border-color: var(--secondary); }
+    .addr-default-tag { position: absolute; top: 10px; right: 10px; }
+    .home-score { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: white; border-radius: var(--radius); padding: 2rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 2rem; }
+    .score-circle-mini { width: 90px; height: 90px; border-radius: 50%; background: conic-gradient(rgba(255,255,255,0.9) 0deg 313deg, rgba(255,255,255,0.2) 313deg 360deg); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; color: var(--primary-dark); flex-shrink: 0; }
+    .empty-state { text-align: center; padding: 4rem; color: var(--mid); }
+    .empty-state .icon { font-size: 3.5rem; margin-bottom: 1rem; }
+    @media (max-width: 900px) { .dash-layout { grid-template-columns: 1fr; } .sidebar { position: static; } }
+    @media (max-width: 600px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .booking-row { grid-template-columns: auto 1fr; } }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="container nav-inner">
+    <a href="/index.html" class="nav-logo"><span>Home</span><span>Mitra</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="/index.html">Home</a></li>
+      <li><a href="/pages/services.html">Services</a></li>
+    </ul>
+    <div class="nav-actions" id="navActions"></div>
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="dash-layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-profile">
+        <div class="profile-avatar" id="sideAvatar">U</div>
+        <div class="profile-name" id="sideName">Loading...</div>
+        <div class="profile-email" id="sideEmail"></div>
+        <div class="badge" style="background:rgba(255,255,255,0.2);color:white;margin-top:0.75rem" id="sidePlan">Free Plan</div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#" class="active" onclick="showTab('overview',this)"><span class="nav-icon">🏠</span> Overview</a>
+        <a href="#" onclick="showTab('bookings',this)"><span class="nav-icon">📅</span> My Bookings</a>
+        <a href="#" onclick="showTab('addresses',this)"><span class="nav-icon">📍</span> Addresses</a>
+        <a href="#" onclick="showTab('notifications',this)"><span class="nav-icon">🔔</span> Notifications</a>
+        <a href="/pages/subscriptions.html"><span class="nav-icon">💎</span> Upgrade Plan</a>
+        <a href="#" onclick="logout()"><span class="nav-icon">🚪</span> Logout</a>
+      </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main>
+      <!-- OVERVIEW -->
+      <div id="tab-overview">
+        <h2 style="font-size:1.5rem;margin-bottom:1.5rem">Welcome back, <span id="welcomeName" style="color:var(--primary)">User</span> 👋</h2>
+        <div class="home-score">
+          <div class="score-circle-mini">87</div>
+          <div>
+            <h3 style="font-size:1.2rem;margin-bottom:0.3rem">Home Health Score</h3>
+            <p style="opacity:0.85;font-size:0.9rem">Your home is in great shape! Next recommended: AC servicing.</p>
+            <a href="/pages/services.html?category=5" class="btn btn-sm mt-2" style="background:rgba(255,255,255,0.2);color:white;border-color:rgba(255,255,255,0.4)">Book AC Service →</a>
+          </div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card-icon" style="background:#eef2ff;color:var(--primary)">📅</div>
+            <div class="stat-card-val" id="statTotal">0</div>
+            <div class="stat-card-lbl">Total Bookings</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon" style="background:#d1fae5;color:var(--secondary)">✅</div>
+            <div class="stat-card-val" id="statCompleted">0</div>
+            <div class="stat-card-lbl">Completed</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon" style="background:#fef3c7;color:#d97706">⏳</div>
+            <div class="stat-card-val" id="statPending">0</div>
+            <div class="stat-card-lbl">Upcoming</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon" style="background:#fee2e2;color:var(--danger)">💸</div>
+            <div class="stat-card-val" id="statSpent">₹0</div>
+            <div class="stat-card-lbl">Total Spent</div>
+          </div>
+        </div>
+        <div style="background:white;border-radius:var(--radius);border:1px solid var(--border);padding:1.75rem">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+            <h3>Recent Bookings</h3>
+            <a href="#" onclick="showTab('bookings',document.querySelector('.sidebar-nav a:nth-child(2)'))" style="color:var(--primary);font-size:0.88rem;font-weight:600">View All →</a>
+          </div>
+          <div id="recentBookings"></div>
+        </div>
+      </div>
+
+      <!-- BOOKINGS -->
+      <div id="tab-bookings" class="hidden">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+          <h2 style="font-size:1.5rem">My Bookings</h2>
+          <a href="/pages/services.html" class="btn btn-primary btn-sm">+ New Booking</a>
+        </div>
+        <div class="tab-bar">
+          <button class="tab active" onclick="filterBookings('all',this)">All</button>
+          <button class="tab" onclick="filterBookings('PENDING',this)">Pending</button>
+          <button class="tab" onclick="filterBookings('CONFIRMED',this)">Confirmed</button>
+          <button class="tab" onclick="filterBookings('COMPLETED',this)">Completed</button>
+          <button class="tab" onclick="filterBookings('CANCELLED',this)">Cancelled</button>
+        </div>
+        <div id="bookingsList"></div>
+      </div>
+
+      <!-- ADDRESSES -->
+      <div id="tab-addresses" class="hidden">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+          <h2 style="font-size:1.5rem">Saved Addresses</h2>
+          <button class="btn btn-primary btn-sm" onclick="addAddress()">+ Add Address</button>
+        </div>
+        <div class="address-grid" id="addressGrid">
+          <div class="addr-card default">
+            <div class="addr-default-tag"><span class="badge badge-success">Default</span></div>
+            <div style="font-size:1.3rem;margin-bottom:0.5rem">🏠</div>
+            <div style="font-weight:700;margin-bottom:0.3rem">Home</div>
+            <div style="font-size:0.85rem;color:var(--mid)">123, Koregaon Park, Pune, Maharashtra - 411001</div>
+            <div style="display:flex;gap:0.5rem;margin-top:1rem"><button class="btn btn-sm btn-secondary">Edit</button><button class="btn btn-sm btn-ghost">Delete</button></div>
+          </div>
+          <div class="addr-card">
+            <div style="font-size:1.3rem;margin-bottom:0.5rem">🏢</div>
+            <div style="font-weight:700;margin-bottom:0.3rem">Office</div>
+            <div style="font-size:0.85rem;color:var(--mid)">456, Baner Road, Pune, Maharashtra - 411045</div>
+            <div style="display:flex;gap:0.5rem;margin-top:1rem"><button class="btn btn-sm btn-secondary">Edit</button><button class="btn btn-sm btn-ghost">Delete</button></div>
+          </div>
+          <div class="addr-card" style="border-style:dashed;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:160px;cursor:pointer" onclick="addAddress()">
+            <div style="font-size:2rem;margin-bottom:0.5rem">➕</div>
+            <div style="font-weight:600;color:var(--primary)">Add New Address</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NOTIFICATIONS -->
+      <div id="tab-notifications" class="hidden">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+          <h2 style="font-size:1.5rem">Notifications</h2>
+          <button class="btn btn-ghost btn-sm" onclick="markAllRead()">Mark all read</button>
+        </div>
+        <div id="notifList"></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="../js/api.js"></script>
+<script>
+if (!Auth.requireAuth()) {}
+initNavbar();
+
+const user = Auth.user();
+if (user) {
+  document.getElementById('sideAvatar').textContent = user.name.charAt(0).toUpperCase();
+  document.getElementById('sideName').textContent = user.name;
+  document.getElementById('sideEmail').textContent = user.email;
+  document.getElementById('welcomeName').textContent = user.name.split(' ')[0];
+}
+
+function renderStarsHTML(r){ return Array.from({length:5},(_,i)=>`<span class="star${i<r?'':' empty'}">★</span>`).join(''); }
+
+function statusBadge(s) {
+  const m = {PENDING:'badge-warning',CONFIRMED:'badge-primary',IN_PROGRESS:'badge-primary',COMPLETED:'badge-success',CANCELLED:'badge-danger'};
+  return `<span class="badge ${m[s]||'badge-primary'}">${s}</span>`;
+}
+
+let allBookings = [];
+function loadBookings() {
+  api.bookings.mine(0,20).then(res => {
+    allBookings = res.data.content || res.data || [];
+    renderBookingStats();
+    renderRecentBookings();
+    renderBookingsList(allBookings);
+  }).catch(() => {
+    allBookings = [
+      {id:1,bookingRef:'HM-ABC123',serviceName:'Deep Home Cleaning',serviceIcon:'🧹',status:'COMPLETED',finalAmount:588.82,scheduledAt:'2024-01-15T10:00',providerName:'Ramesh Kumar'},
+      {id:2,bookingRef:'HM-DEF456',serviceName:'Pipe Leak Repair',serviceIcon:'🚿',status:'CONFIRMED',finalAmount:942.82,scheduledAt:'2024-01-20T14:00',providerName:'Suresh Singh'},
+      {id:3,bookingRef:'HM-GHI789',serviceName:'AC Service',serviceIcon:'🔧',status:'PENDING',finalAmount:1768.82,scheduledAt:'2024-01-25T11:00',providerName:'Assigning...'},
+    ];
+    renderBookingStats();
+    renderRecentBookings();
+    renderBookingsList(allBookings);
+  });
+}
+
+function renderBookingStats() {
+  document.getElementById('statTotal').textContent = allBookings.length;
+  document.getElementById('statCompleted').textContent = allBookings.filter(b=>b.status==='COMPLETED').length;
+  document.getElementById('statPending').textContent = allBookings.filter(b=>['PENDING','CONFIRMED'].includes(b.status)).length;
+  const spent = allBookings.filter(b=>b.status==='COMPLETED').reduce((s,b)=>s+parseFloat(b.finalAmount||0),0);
+  document.getElementById('statSpent').textContent = formatPrice(spent.toFixed(0));
+}
+
+function renderRecentBookings() {
+  const el = document.getElementById('recentBookings');
+  const recent = allBookings.slice(0,3);
+  if (!recent.length) { el.innerHTML = '<div class="empty-state"><div class="icon">📅</div><p>No bookings yet</p><a href="/pages/services.html" class="btn btn-primary mt-2">Book a Service</a></div>'; return; }
+  el.innerHTML = recent.map(b=>bookingRowHTML(b)).join('');
+}
+
+function renderBookingsList(data) {
+  const el = document.getElementById('bookingsList');
+  if (!data.length) { el.innerHTML = '<div class="empty-state"><div class="icon">📋</div><p>No bookings in this category</p></div>'; return; }
+  el.innerHTML = data.map(b=>bookingRowHTML(b)).join('');
+}
+
+function bookingRowHTML(b) {
+  const d = new Date(b.scheduledAt);
+  return `<div class="booking-row">
+    <div class="booking-icon">${b.serviceIcon||'🏠'}</div>
+    <div>
+      <div class="booking-name">${b.serviceName}</div>
+      <div class="booking-meta">📅 ${d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})} · 👤 ${b.providerName||'Assigning...'} · ${b.bookingRef}</div>
+    </div>
+    <div>${statusBadge(b.status)}</div>
+    <div>
+      <div class="booking-amount">${formatPrice(parseFloat(b.finalAmount).toFixed(0))}</div>
+      <div class="booking-date">${b.status==='COMPLETED'?'<a href="#" style="color:var(--primary);font-size:0.75rem;font-weight:600">Rate Service</a>':'<span style="font-size:0.75rem;color:var(--mid)">View Details</span>'}</div>
+    </div>
+  </div>`;
+}
+
+function filterBookings(status, el) {
+  document.querySelectorAll('.tab-bar .tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  const filtered = status === 'all' ? allBookings : allBookings.filter(b=>b.status===status);
+  renderBookingsList(filtered);
+}
+
+function loadNotifications() {
+  api.notifications.list().then(res => {
+    const notifs = res.data;
+    if (!notifs.length) { document.getElementById('notifList').innerHTML = '<div class="empty-state"><div class="icon">🔔</div><p>No notifications yet</p></div>'; return; }
+    document.getElementById('notifList').innerHTML = notifs.map(n=>`
+      <div style="background:${n.read?'white':'#eef2ff'};border:1px solid var(--border);border-radius:var(--radius-sm);padding:1.1rem;margin-bottom:0.75rem;display:flex;gap:1rem;align-items:flex-start">
+        <div style="font-size:1.5rem">${{BOOKING:'📅',PAYMENT:'💳',PROMO:'🎁',SYSTEM:'ℹ️'}[n.type]||'🔔'}</div>
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:0.92rem;margin-bottom:0.2rem">${n.title}</div>
+          <div style="font-size:0.85rem;color:var(--mid)">${n.body}</div>
+          <div style="font-size:0.75rem;color:var(--mid);margin-top:0.4rem">${new Date(n.createdAt).toLocaleString('en-IN')}</div>
+        </div>
+        ${!n.read ? '<span class="badge badge-primary" style="flex-shrink:0">New</span>' : ''}
+      </div>`).join('');
+  }).catch(() => {
+    document.getElementById('notifList').innerHTML = [
+      {icon:'📅',title:'Booking Confirmed',body:'Your booking HM-ABC123 has been confirmed. Provider: Ramesh Kumar.',time:'2 hours ago',new:true},
+      {icon:'💳',title:'Payment Successful',body:'₹588 paid for Deep Home Cleaning.',time:'2 hours ago',new:false},
+      {icon:'🎁',title:'Special Offer!',body:'Get 20% off on your next booking with code HOMEMITRA20.',time:'1 day ago',new:false},
+    ].map(n=>`
+      <div style="background:${n.new?'#eef2ff':'white'};border:1px solid var(--border);border-radius:var(--radius-sm);padding:1.1rem;margin-bottom:0.75rem;display:flex;gap:1rem;align-items:flex-start">
+        <div style="font-size:1.5rem">${n.icon}</div>
+        <div style="flex:1"><div style="font-weight:600;font-size:0.92rem;margin-bottom:0.2rem">${n.title}</div><div style="font-size:0.85rem;color:var(--mid)">${n.body}</div><div style="font-size:0.75rem;color:var(--mid);margin-top:0.4rem">${n.time}</div></div>
+        ${n.new?'<span class="badge badge-primary" style="flex-shrink:0">New</span>':''}
+      </div>`).join('');
+  });
+}
+
+function markAllRead() {
+  api.notifications.markRead().then(() => { Toast.show('All notifications marked as read','success'); loadNotifications(); }).catch(()=>{});
+}
+
+function showTab(tab, el) {
+  document.querySelectorAll('.sidebar-nav a').forEach(a=>a.classList.remove('active'));
+  if (el) el.classList.add('active');
+  ['overview','bookings','addresses','notifications'].forEach(t=>document.getElementById('tab-'+t)?.classList.add('hidden'));
+  document.getElementById('tab-'+tab)?.classList.remove('hidden');
+  if (tab==='notifications') loadNotifications();
+}
+
+function addAddress() { Toast.show('Address management coming soon!','info'); }
+
+loadBookings();
+</script>
+</body>
+</html>

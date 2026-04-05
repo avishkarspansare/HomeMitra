@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Provider Dashboard – HomeMitra</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <style>
+    body { background: var(--light); padding-top: 70px; }
+    .prov-layout { display: grid; grid-template-columns: 280px 1fr; gap: 2rem; padding: 2rem 0 4rem; align-items: start; }
+    .sidebar { background: white; border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; position: sticky; top: 90px; }
+    .sidebar-header { background: linear-gradient(135deg, #0f172a, #1e1b4b); color: white; padding: 2rem; }
+    .prov-avatar { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg,var(--primary),var(--secondary)); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem; }
+    .prov-name { font-weight: 700; font-size: 1.05rem; margin-bottom: 0.2rem; }
+    .avail-toggle { display: flex; align-items: center; gap: 0.75rem; margin-top: 1rem; }
+    .toggle-switch { width: 44px; height: 24px; background: #ef4444; border-radius: 99px; position: relative; cursor: pointer; transition: background var(--transition); }
+    .toggle-switch.on { background: var(--secondary); }
+    .toggle-switch::after { content:''; position:absolute; width:18px; height:18px; background:white; border-radius:50%; top:3px; left:3px; transition:transform var(--transition); }
+    .toggle-switch.on::after { transform:translateX(20px); }
+    .sidebar-nav { padding: 1rem 0; }
+    .sidebar-nav a { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1.5rem; font-size: 0.9rem; font-weight: 500; color: var(--mid); transition: all var(--transition); border-left: 3px solid transparent; }
+    .sidebar-nav a:hover, .sidebar-nav a.active { color: var(--primary); background: var(--primary-light); border-left-color: var(--primary); font-weight: 600; }
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; margin-bottom: 2rem; }
+    .stat-box { background: white; border-radius: var(--radius); border: 1px solid var(--border); padding: 1.5rem; }
+    .stat-box-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+    .stat-box-val { font-size: 1.8rem; font-weight: 800; font-family: 'Syne',sans-serif; }
+    .stat-box-lbl { font-size: 0.8rem; color: var(--mid); margin-top: 0.2rem; }
+    .chart-bar { display: flex; align-items: flex-end; gap: 6px; height: 80px; margin-top: 1rem; }
+    .bar { flex: 1; background: linear-gradient(180deg, var(--primary), var(--primary-dark)); border-radius: 4px 4px 0 0; min-height: 4px; transition: all var(--transition); }
+    .bar:hover { background: var(--secondary); }
+    .order-card { background: white; border-radius: var(--radius); border: 1px solid var(--border); padding: 1.5rem; margin-bottom: 1rem; display: grid; grid-template-columns: auto 1fr auto; gap: 1.25rem; align-items: center; }
+    .order-icon { width: 52px; height: 52px; border-radius: 14px; background: var(--primary-light); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
+    .order-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.3rem; }
+    .order-meta { font-size: 0.8rem; color: var(--mid); }
+    .order-actions { display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-end; }
+    .earnings-card { background: linear-gradient(135deg, var(--secondary-dark), var(--secondary)); color: white; border-radius: var(--radius); padding: 2rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+    @media (max-width: 900px) { .prov-layout { grid-template-columns: 1fr; } .sidebar { position: static; } .stats-row { grid-template-columns: repeat(2, 1fr); } }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="container nav-inner">
+    <a href="/index.html" class="nav-logo"><span>Home</span><span>Mitra</span></a>
+    <div class="nav-actions" id="navActions"></div>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="prov-layout">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="prov-avatar" id="provAvatar">P</div>
+        <div class="prov-name" id="provName">Provider</div>
+        <div style="font-size:0.78rem;opacity:0.7">⭐ 4.8 · 127 jobs completed</div>
+        <div class="avail-toggle">
+          <div class="toggle-switch on" id="availToggle" onclick="toggleAvailability()"></div>
+          <span style="font-size:0.85rem" id="availLabel">Available</span>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#" class="active" onclick="showPTab('overview',this)">📊 Overview</a>
+        <a href="#" onclick="showPTab('orders',this)">📋 Job Requests</a>
+        <a href="#" onclick="showPTab('earnings',this)">💰 Earnings</a>
+        <a href="#" onclick="showPTab('profile',this)">👤 My Profile</a>
+        <a href="#" onclick="logout()">🚪 Logout</a>
+      </nav>
+    </aside>
+
+    <main>
+      <!-- OVERVIEW -->
+      <div id="ptab-overview">
+        <h2 style="font-size:1.5rem;margin-bottom:1.5rem">Provider Dashboard</h2>
+        <div class="earnings-card">
+          <div>
+            <div style="opacity:0.85;font-size:0.85rem;margin-bottom:0.25rem">This Month's Earnings</div>
+            <div style="font-size:2.5rem;font-weight:800;font-family:'Syne',sans-serif">₹12,450</div>
+            <div style="opacity:0.8;font-size:0.82rem;margin-top:0.25rem">↑ 18% from last month</div>
+          </div>
+          <div style="text-align:right">
+            <div style="opacity:0.85;font-size:0.82rem;margin-bottom:0.5rem">Jobs This Month</div>
+            <div style="font-size:2rem;font-weight:800;font-family:'Syne',sans-serif">23</div>
+          </div>
+        </div>
+        <div class="stats-row">
+          <div class="stat-box"><div class="stat-box-icon">📋</div><div class="stat-box-val" id="ps-total">127</div><div class="stat-box-lbl">Total Jobs</div></div>
+          <div class="stat-box"><div class="stat-box-icon">⭐</div><div class="stat-box-val">4.8</div><div class="stat-box-lbl">Avg Rating</div></div>
+          <div class="stat-box"><div class="stat-box-icon">⏳</div><div class="stat-box-val" id="ps-pending">3</div><div class="stat-box-lbl">Pending Requests</div></div>
+          <div class="stat-box"><div class="stat-box-icon">✅</div><div class="stat-box-val">98%</div><div class="stat-box-lbl">Completion Rate</div></div>
+        </div>
+        <div style="background:white;border-radius:var(--radius);border:1px solid var(--border);padding:1.75rem;margin-bottom:1.5rem">
+          <h3 style="margin-bottom:1.25rem">Weekly Earnings</h3>
+          <div class="chart-bar">
+            <div class="bar" style="height:40%" title="Mon"></div>
+            <div class="bar" style="height:65%" title="Tue"></div>
+            <div class="bar" style="height:50%" title="Wed"></div>
+            <div class="bar" style="height:80%" title="Thu"></div>
+            <div class="bar" style="height:60%" title="Fri"></div>
+            <div class="bar" style="height:90%" title="Sat"></div>
+            <div class="bar" style="height:45%" title="Sun"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--mid);margin-top:0.5rem">
+            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+          </div>
+        </div>
+        <div style="background:white;border-radius:var(--radius);border:1px solid var(--border);padding:1.75rem">
+          <h3 style="margin-bottom:1.25rem">Pending Job Requests</h3>
+          <div id="pendingOrders"></div>
+        </div>
+      </div>
+
+      <!-- ORDERS -->
+      <div id="ptab-orders" class="hidden">
+        <h2 style="font-size:1.5rem;margin-bottom:1.5rem">Job Requests</h2>
+        <div class="tab-bar" style="display:flex;gap:0.5rem;background:white;border-radius:var(--radius-sm);padding:4px;border:1px solid var(--border);margin-bottom:1.5rem;width:fit-content">
+          <button class="tab active" onclick="filterOrders('all',this)">All</button>
+          <button class="tab" onclick="filterOrders('new',this)">New Requests</button>
+          <button class="tab" onclick="filterOrders('active',this)">Active</button>
+          <button class="tab" onclick="filterOrders('done',this)">Completed</button>
+        </div>
+        <div id="allOrdersList"></div>
+      </div>
+
+      <!-- EARNINGS -->
+      <div id="ptab-earnings" class="hidden">
+        <h2 style="font-size:1.5rem;margin-bottom:1.5rem">Earnings</h2>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:2rem">
+          <div style="background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white;border-radius:var(--radius);padding:1.5rem">
+            <div style="opacity:0.8;font-size:0.82rem;margin-bottom:0.3rem">Total Earned</div>
+            <div style="font-size:2rem;font-weight:800;font-family:'Syne',sans-serif">₹1,24,500</div>
+          </div>
+          <div style="background:linear-gradient(135deg,var(--secondary-dark),var(--secondary));color:white;border-radius:var(--radius);padding:1.5rem">
+            <div style="opacity:0.8;font-size:0.82rem;margin-bottom:0.3rem">This Month</div>
+            <div style="font-size:2rem;font-weight:800;font-family:'Syne',sans-serif">₹12,450</div>
+          </div>
+          <div style="background:linear-gradient(135deg,#f59e0b,#d97706);color:white;border-radius:var(--radius);padding:1.5rem">
+            <div style="opacity:0.8;font-size:0.82rem;margin-bottom:0.3rem">Pending Payout</div>
+            <div style="font-size:2rem;font-weight:800;font-family:'Syne',sans-serif">₹3,200</div>
+          </div>
+        </div>
+        <div style="background:white;border-radius:var(--radius);border:1px solid var(--border);padding:1.75rem">
+          <h3 style="margin-bottom:1.25rem">Transaction History</h3>
+          ${[{ref:'HM-ABC123',svc:'Deep Cleaning',date:'Jan 15',amt:450,fee:45,net:405},{ref:'HM-DEF456',svc:'Pipe Repair',date:'Jan 18',amt:720,fee:72,net:648},{ref:'HM-GHI789',svc:'Fan Installation',date:'Jan 20',amt:630,fee:63,net:567}].map(t=>`
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem 0;border-bottom:1px solid var(--border);font-size:0.9rem">
+              <div>
+                <div style="font-weight:600">${t.svc}</div>
+                <div style="font-size:0.78rem;color:var(--mid)">${t.ref} · ${t.date}</div>
+              </div>
+              <div style="text-align:right">
+                <div style="font-weight:700;color:var(--secondary)">+₹${t.net}</div>
+                <div style="font-size:0.75rem;color:var(--mid)">Total ₹${t.amt} · Fee ₹${t.fee}</div>
+              </div>
+            </div>`).join('')}
+        </div>
+      </div>
+
+      <!-- PROFILE -->
+      <div id="ptab-profile" class="hidden">
+        <h2 style="font-size:1.5rem;margin-bottom:1.5rem">My Profile</h2>
+        <div style="background:white;border-radius:var(--radius);border:1px solid var(--border);padding:2rem;max-width:600px">
+          <div class="form-group"><label class="form-label">Full Name</label><input type="text" class="form-control" value="Ramesh Kumar"></div>
+          <div class="form-group"><label class="form-label">Phone</label><input type="tel" class="form-control" value="9876543210"></div>
+          <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-control" value="ramesh@example.com"></div>
+          <div class="form-group"><label class="form-label">Bio / About</label><textarea class="form-control" rows="3" style="resize:none">Professional cleaner with 5+ years experience. Specialised in deep cleaning and sanitisation.</textarea></div>
+          <div class="form-group"><label class="form-label">Experience (years)</label><input type="number" class="form-control" value="5" min="0"></div>
+          <button class="btn btn-primary" onclick="Toast.show('Profile updated!','success')">Save Changes</button>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="../js/api.js"></script>
+<script>
+initNavbar();
+const user = Auth.user();
+if (user) {
+  document.getElementById('provAvatar').textContent = user.name?.charAt(0) || 'P';
+  document.getElementById('provName').textContent = user.name || 'Provider';
+}
+
+const mockOrders = [
+  {id:1,icon:'🧹',title:'Deep Home Cleaning',meta:'Customer: Priya S. · 3 Jan, 10:00 AM · Koregaon Park',amount:499,status:'new'},
+  {id:2,icon:'🚿',title:'Pipe Leak Repair',meta:'Customer: Rahul M. · 3 Jan, 2:00 PM · Baner Road',amount:799,status:'new'},
+  {id:3,icon:'🔌',title:'Fan Installation',meta:'Customer: Sunita K. · 4 Jan, 11:00 AM · Kothrud',amount:699,status:'active'},
+  {id:4,icon:'🧹',title:'Bathroom Cleaning',meta:'Customer: Amit P. · 1 Jan, 9:00 AM',amount:299,status:'done'},
+];
+
+function orderCardHTML(o) {
+  const statusMap = {new:'badge-warning',active:'badge-primary',done:'badge-success'};
+  return `<div class="order-card">
+    <div class="order-icon">${o.icon}</div>
+    <div>
+      <div class="order-title">${o.title}</div>
+      <div class="order-meta">${o.meta}</div>
+    </div>
+    <div class="order-actions">
+      <span class="badge ${statusMap[o.status]}">${o.status.toUpperCase()}</span>
+      <div style="font-weight:700;color:var(--primary)">${formatPrice(o.amount)}</div>
+      ${o.status==='new' ? `<div style="display:flex;gap:0.4rem"><button class="btn btn-success btn-sm" onclick="acceptOrder(${o.id})">Accept</button><button class="btn btn-ghost btn-sm">Decline</button></div>` : ''}
+      ${o.status==='active' ? `<button class="btn btn-primary btn-sm" onclick="completeOrder(${o.id})">Mark Complete</button>` : ''}
+    </div>
+  </div>`;
+}
+
+document.getElementById('pendingOrders').innerHTML = mockOrders.filter(o=>o.status==='new').map(orderCardHTML).join('') || '<p style="color:var(--mid);text-align:center;padding:2rem">No pending requests</p>';
+document.getElementById('allOrdersList').innerHTML = mockOrders.map(orderCardHTML).join('');
+
+function filterOrders(type, el) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  const filtered = type==='all' ? mockOrders : type==='new' ? mockOrders.filter(o=>o.status==='new') : type==='active' ? mockOrders.filter(o=>o.status==='active') : mockOrders.filter(o=>o.status==='done');
+  document.getElementById('allOrdersList').innerHTML = filtered.map(orderCardHTML).join('');
+}
+
+function acceptOrder(id) { Toast.show('Job accepted! Customer will be notified.','success'); }
+function completeOrder(id) { Toast.show('Job marked as complete!','success'); }
+
+let available = true;
+function toggleAvailability() {
+  available = !available;
+  const t = document.getElementById('availToggle');
+  const l = document.getElementById('availLabel');
+  t.classList.toggle('on', available);
+  l.textContent = available ? 'Available' : 'Offline';
+  Toast.show(`You are now ${available?'online and accepting jobs':'offline'}`, available?'success':'warning');
+}
+
+function showPTab(tab, el) {
+  document.querySelectorAll('.sidebar-nav a').forEach(a=>a.classList.remove('active'));
+  if(el) el.classList.add('active');
+  ['overview','orders','earnings','profile'].forEach(t=>document.getElementById('ptab-'+t)?.classList.add('hidden'));
+  document.getElementById('ptab-'+tab)?.classList.remove('hidden');
+}
+</script>
+</body>
+</html>

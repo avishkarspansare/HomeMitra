@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register – HomeMitra</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <style>
+    body { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+    .auth-wrap { max-width: 520px; width: 100%; background: white; border-radius: 28px; padding: 3rem; box-shadow: 0 40px 80px rgba(0,0,0,0.4); }
+    .auth-logo { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .auth-logo span:first-child { color: var(--primary); }
+    .auth-logo span:last-child { color: var(--secondary); }
+    .role-tabs { display: flex; gap: 0; background: var(--light); border-radius: var(--radius-sm); padding: 4px; margin-bottom: 2rem; }
+    .role-tab { flex: 1; padding: 0.6rem; text-align: center; border-radius: 8px; cursor: pointer; font-size: 0.88rem; font-weight: 600; color: var(--mid); transition: all var(--transition); border: none; background: transparent; font-family: 'DM Sans',sans-serif; }
+    .role-tab.active { background: white; color: var(--primary); box-shadow: var(--shadow-sm); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .strength-bar { height: 4px; border-radius: 2px; background: var(--border); margin-top: 0.4rem; overflow: hidden; }
+    .strength-fill { height: 100%; border-radius: 2px; transition: all 0.4s; width: 0; }
+  </style>
+</head>
+<body>
+<div class="auth-wrap">
+  <div class="auth-logo"><span>Home</span><span>Mitra</span></div>
+  <h1 style="font-size:1.7rem;margin-bottom:0.25rem">Create account</h1>
+  <p style="color:var(--mid);font-size:0.9rem;margin-bottom:1.5rem">Already have one? <a href="/pages/login.html" style="color:var(--primary);font-weight:600">Sign in →</a></p>
+
+  <div class="role-tabs">
+    <button class="role-tab active" data-role="CUSTOMER" onclick="setRole('CUSTOMER',this)">🏠 I need services</button>
+    <button class="role-tab" data-role="PROVIDER" onclick="setRole('PROVIDER',this)">🔧 I provide services</button>
+  </div>
+
+  <form id="regForm">
+    <input type="hidden" id="roleInput" value="CUSTOMER">
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <input type="text" class="form-control" id="fullName" placeholder="Priya Sharma" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone</label>
+        <input type="tel" class="form-control" id="phone" placeholder="9876543210" maxlength="10" required>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email address</label>
+      <input type="email" class="form-control" id="email" placeholder="you@example.com" required>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input type="password" class="form-control" id="password" placeholder="At least 8 characters" required oninput="updateStrength(this.value)">
+      <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+      <div style="font-size:0.75rem;color:var(--mid);margin-top:0.25rem" id="strengthLabel"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Confirm Password</label>
+      <input type="password" class="form-control" id="confirmPassword" placeholder="Repeat password" required>
+      <div class="form-error hidden" id="pwdMatchErr">Passwords do not match</div>
+    </div>
+    <div style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:1.5rem">
+      <input type="checkbox" id="terms" required style="margin-top:3px;accent-color:var(--primary)">
+      <label for="terms" style="font-size:0.85rem;color:var(--mid)">I agree to HomeMitra's <a href="#" style="color:var(--primary)">Terms of Service</a> and <a href="#" style="color:var(--primary)">Privacy Policy</a></label>
+    </div>
+    <button type="submit" class="btn btn-primary btn-full btn-lg" id="regBtn">
+      <span id="regBtnText">Create Account</span>
+      <span id="regSpinner" class="spinner hidden" style="width:18px;height:18px;border-width:2px"></span>
+    </button>
+  </form>
+</div>
+<script src="../js/api.js"></script>
+<script>
+  if (Auth.loggedIn()) window.location.href = '/index.html';
+  function setRole(role, el) {
+    document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('roleInput').value = role;
+  }
+  function updateStrength(pwd) {
+    const fill = document.getElementById('strengthFill');
+    const lbl = document.getElementById('strengthLabel');
+    let score = 0;
+    if (pwd.length >= 8) score++;
+    if (/[A-Z]/.test(pwd)) score++;
+    if (/[0-9]/.test(pwd)) score++;
+    if (/[^A-Za-z0-9]/.test(pwd)) score++;
+    const levels = [{w:'0%',c:'',t:''},{w:'25%',c:'#ef4444',t:'Weak'},{w:'50%',c:'#f59e0b',t:'Fair'},{w:'75%',c:'#6366f1',t:'Good'},{w:'100%',c:'#10b981',t:'Strong'}];
+    const l = levels[score];
+    fill.style.width = l.w; fill.style.background = l.c; lbl.textContent = l.t; lbl.style.color = l.c;
+  }
+  document.getElementById('regForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const pwd = document.getElementById('password').value;
+    const confirm = document.getElementById('confirmPassword').value;
+    const errEl = document.getElementById('pwdMatchErr');
+    if (pwd !== confirm) { errEl.classList.remove('hidden'); return; }
+    errEl.classList.add('hidden');
+    const btn = document.getElementById('regBtn');
+    const spinner = document.getElementById('regSpinner');
+    const txt = document.getElementById('regBtnText');
+    btn.disabled = true; spinner.classList.remove('hidden'); txt.textContent = 'Creating...';
+    try {
+      const res = await api.auth.register({
+        fullName: document.getElementById('fullName').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        password: pwd,
+        role: document.getElementById('roleInput').value
+      });
+      Auth.save(res.data);
+      Toast.show('Account created! Welcome to HomeMitra 🎉', 'success');
+      setTimeout(() => {
+        if (res.data.role === 'PROVIDER') window.location.href = '/pages/provider-dashboard.html';
+        else window.location.href = '/pages/dashboard.html';
+      }, 900);
+    } catch { btn.disabled = false; spinner.classList.add('hidden'); txt.textContent = 'Create Account'; }
+  });
+</script>
+</body>
+</html>
